@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="js/jquery-1.12.4.js"></script>
+	<script src="components/semantic/semantic.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+	<script src="js/controller.js"></script>
+	<script src="js/main.js"></script>
+	<script src='//maps.googleapis.com/maps/api/js?key=AIzaSyB7yLRsbqezx-dLDB4kWQaiBGEH8YlRH8I'></script>
+	<script src="js/maps.js"></script>
+	<title>Pedidos</title>
+	<link rel="stylesheet" type="text/css" href="components/semantic/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body ng-app="pedidoApp" ng-controller="pedidoCtrl">
+
+<div class="carta">
+	<form id="pedido" class="ui form">
+		<div class="two fields">
+			<div class="field">
+				Restaurante: 
+				<select id="restaurant-list" ng-click="getRestaurantes.local()">
+					<option value="">-- Seleccione restaurante --</option>
+					<option ng-repeat="rest in restaurantes" value="{{ rest._id }}" >{{	rest.name }}</option>
+				</select>
+			</div>
+			<div class="field">
+				Local: 
+				<select id="local-list">
+					<option value="">-- Seleccione local --</option>
+					<option ng-repeat="local in locales" value="{{ local.headquarters }}">{{ local.headquarters }}</option>
+				</select>
+			</div>
+		</div>
+		<h4 class="ui dividing header">Pedido</h4>
+		<div class="two fields">
+			<div class="field">
+				<div class="fields">
+					<div class="five wide field">
+						<div class="pedido-box">
+							<div class="center-box">
+								<div class="item-center icon">
+									<i class="huge add circle icon"></i>
+								</div>
+								<div class="item-center ">
+									<label>producto</label>
+								</div>	
+							</div>
+						</div>
+					</div>
+					<div class="eleven wide field">
+						<textarea id="comentarios" placeholder="Comentarios extras sobre el pedido"></textarea>
+					</div>
+
+				</div>
+			</div>
+			<div class="field">
+				<div class="ui celled ordered list" id="list-product">
+					<div class="item">
+						pan con queso
+						<div class="right floated pointer">x</div>
+						<div class="right floated rigth-40">S/ 15.00</div>
+					</div>
+					<div class="item">
+						pan con queso
+						<div class="right floated pointer">x</div>
+						<div class="right floated rigth-40">S/ 15.00</div>
+					</div>
+					<div class="item">
+						pan con queso
+						<div class="right floated pointer">x</div>
+						<div class="right floated rigth-40">S/ 15.00</div>
+					</div>
+				</div>
+				<label>Total</label>
+				<input type="text"></input>
+			</div>
+		</div>
+		<div class="two fields">
+			<div class="field">
+				<label>Destino</label>
+				<input type="text"></input>
+			</div>
+			<div class="field">
+				<label>referencia</label>
+				<input type="text"></input>
+			</div>
+		</div>
+		<div class="two fields">
+			<div class='field'>
+				<div id='map'></div>
+			</div>
+			<div class="field">
+				<label>Metodo de pago:</label>
+				<select id="tipo-pago">
+					<option>-- Seleccione metodo de pago --</option>
+					<option value="efectivo">Efectivo</option>
+					<option value="visa">Visa</option>
+				</select>
+				<label>Monto a cobrar</label>
+				<input type="text"></input>
+				<button class="ui button btn-submit">Realizar Pedido</button>
+			</div>
+		</div>
+	</form>
+</div>
+	
+<!-- Pop up con los productos -->
+<div class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Productos
+  </div>
+  <div class="image content">
+    <div class="description">
+       <div class="ui list">
+       		<div class="item">
+       			<div class="ui checkbox">
+				  <input type="checkbox" name="example">
+				  <label>Producto 1</label>
+				</div>
+       		</div>
+       </div>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui button">Cancel</div>
+    <div class="ui button">OK</div>
+  </div>
+</div>
+</body>
+</html>
