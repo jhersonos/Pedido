@@ -9,4 +9,10 @@ $( document ).ready(function() {
 		  .modal('show')
 		;
     })
+    function remove(id){
+    	var tag = "#"+id;
+    	var tagitem = "#item"+id;
+    	$(tagitem).remove();
+    	$(tag).prop('checked',false)
+    }
 });

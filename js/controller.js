@@ -4,7 +4,8 @@ app.controller("pedidoCtrl", function($scope,$http) {
 	$scope.restaurantes=[{}];
 	$scope.locales=[{}];
 	$scope.productos={};
-	$scope.listap={};
+	$scope.listap=[];
+	var total=0;
 	$scope.getRestaurantes={
 		company:function(){
 			var url = "http://localhost:3000/company";
@@ -45,7 +46,6 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					  url: url
 					}).then(function successCallback(response) {				    					    
 					    $scope.productos=response.data[0].headquarters[0].menu;
-					    $scope.listap = $scope.productos;
 					    // console.log($scope.productos)
 					  }, function errorCallback(response) {
 					    console.log(response)
@@ -54,6 +54,23 @@ app.controller("pedidoCtrl", function($scope,$http) {
 
 				}
 			});
+		},addProduct:function(){
+			total=0;
+			$("#list-product").html("");
+			$("table tbody tr td input:checked").each(function(i, elem){
+              var n = "#n"+this.id;
+              var p = "#p"+this.id;
+              var idcheck= parseInt(this.id);
+              var nombre=$(n).val();//nombre del producto
+              var precio = $(p).val();//precio del producto
+              $("#list-product").append('<div class="item" id="item'+idcheck+'">'
+              	+nombre+'<div class="right floated pointer" onclick="remove('+idcheck+')">x</div>'+						
+						'<div class="right floated rigth-40">S/'+
+						precio+'</div></div>');
+              total = parseInt(total) + parseInt(precio);
+              console.log(total)
+          });
+			$('#total').val(total)
 		}
 	}
 	$scope.getRestaurantes.company();
