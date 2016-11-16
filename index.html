@@ -26,9 +26,9 @@
 			</div>
 			<div class="field">
 				Local: 
-				<select id="local-list">
+				<select id="local-list" ng-click="getRestaurantes.producto()">
 					<option value="">-- Seleccione local --</option>
-					<option ng-repeat="local in locales.headquarters" value="{{ local.address }}">{{ local.address }}</option>
+					<option ng-repeat="local in locales" value="{{ local._id }}">{{ local.address }}</option>
 				</select>
 			</div>
 		</div>
@@ -56,20 +56,10 @@
 			</div>
 			<div class="field">
 				<div class="ui celled ordered list" id="list-product">
-					<div class="item">
-						pan con queso
+					<div class="item" ng-repeat="listap in productos">
+						{{ cart.name }}
 						<div class="right floated pointer">x</div>
-						<div class="right floated rigth-40">S/ 15.00</div>
-					</div>
-					<div class="item">
-						pan con queso
-						<div class="right floated pointer">x</div>
-						<div class="right floated rigth-40">S/ 15.00</div>
-					</div>
-					<div class="item">
-						pan con queso
-						<div class="right floated pointer">x</div>
-						<div class="right floated rigth-40">S/ 15.00</div>
+						<div class="right floated rigth-40">carta.size[0].price</div>
 					</div>
 				</div>
 				<label>Total</label>
@@ -115,17 +105,29 @@
     <div class="description">
        <div class="ui list">
        		<div class="item">
-       			<div class="ui checkbox">
-				  <input type="checkbox" name="example">
-				  <label>Producto 1</label>
-				</div>
+				<table class="ui compact celled definition table">
+				<thead>
+					<tr>
+						<th>-</th><th>producto</th><th>precio</th>
+					</tr>
+				</thead>
+				 	<tbody>
+						<tr ng-repeat="carta in productos">
+							<td><input type="checkbox" name="example" id="$index"/></td>
+							<td>
+								<label>{{ carta.name }}</label>
+							</td>
+							<td><label>{{ carta.size[0].price}}</label></td>
+						</tr>
+					</tbody>
+				</table>
        		</div>
        </div>
     </div>
   </div>
   <div class="actions">
-    <div class="ui button">Cancel</div>
-    <div class="ui button">OK</div>
+    <div class="ui button">Cancelar pedido</div>
+    <div class="ui button">Agregar a la Cola</div>
   </div>
 </div>
 </body>
