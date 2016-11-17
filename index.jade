@@ -1,0 +1,91 @@
+doctype html
+html
+  head
+    script(src='#{assets}/js/jquery-1.12.4.js')
+    script(src='#{assets}/components/semantic/semantic.min.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js')
+    script(src='#{assets}/js/controller.js')
+    script(src='#{assets}/js/main.js')
+    script(src='//maps.googleapis.com/maps/api/js?key=AIzaSyB7yLRsbqezx-dLDB4kWQaiBGEH8YlRH8I')
+    script(src='#{assets}/js/maps.js')
+    title Pedidos
+    link(rel='stylesheet', type='text/css', href='#{assets}/components/semantic/semantic.min.css')
+    link(rel='stylesheet', type='text/css', href='#{assets}/css/main.css')
+  body(ng-app='pedidoApp', ng-controller='pedidoCtrl')
+    .carta
+      form#pedido.ui.form
+        .two.fields
+          .field
+            | Restaurante: 
+            select#restaurant-list(ng-click='getRestaurantes.local()')
+              option(value='') -- Seleccione restaurante --
+              option(ng-repeat='rest in restaurantes', value='{{ rest._id }}') {{	rest.name }}
+          .field
+            | Local: 
+            select#local-list(ng-click='getRestaurantes.producto()')
+              option(value='') -- Seleccione local --
+              option(ng-repeat='local in locales', value='{{ local._id }}') {{ local.address }}
+        h4.ui.dividing.header Pedido
+        .two.fields
+          .field
+            .fields
+              .five.wide.field
+                .pedido-box
+                  .center-box
+                    .item-center.icon
+                      i.huge.add.circle.icon
+                    .item-center
+                      label producto
+              .eleven.wide.field
+                textarea#comentarios(placeholder='Comentarios extras sobre el pedido')
+          .field
+            #list-product.ui.celled.ordered.list
+            label Total
+            input#total(type='text')
+        .two.fields
+          .field
+            label Destino
+            input(type='text')
+          .field
+            label referencia
+            input(type='text')
+        .two.fields
+          .field
+            #map
+          .field
+            label Metodo de pago:
+            select#tipo-pago
+              option -- Seleccione metodo de pago --
+              option(value='efectivo') Efectivo
+              option(value='visa') Visa
+            label Monto a cobrar
+            input(type='text')
+            button.ui.button.btn-submit Realizar Pedido
+    // Pop up con los productos
+    .ui.modal
+      i.close.icon
+      .header
+        | Productos
+      .image.content
+        .description
+          .ui.list
+            .item
+              table.ui.compact.celled.definition.table
+                thead
+                  tr
+                    th -
+                    th producto
+                    th precio
+                tbody
+                  tr(ng-repeat='carta in productos')
+                    td
+                      input(type='checkbox', name='example', id='{{$index}}')
+                    td
+                      label {{ carta.name }}
+                      input(type='hidden', id='n{{$index}}', value='{{ carta.name }}')
+                    td
+                      label {{ carta.size[0].price}}
+                      input(type='hidden', id='p{{$index}}', value='{{ carta.size[0].price }}')
+      .actions
+        .ui.button Cancelar pedido
+        .ui.button(ng-click='getRestaurantes.addProduct()') Agregar a la Cola
