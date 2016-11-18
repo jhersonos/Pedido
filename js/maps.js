@@ -33,9 +33,16 @@ function initialize() {
         title:'Diloo'
     });
  
-    google.maps.event.addListener(marker, 'click', function(){
+    marker.addListener('click', function(){
         openInfoWindow(marker);
     });
+
+    marker.addListener('dragend',function(e){
+            map.panTo({
+                lat: marker.getPosition().lat(),
+                lng: marker.getPosition().lng()
+            }); 
+    })
 }
 
 $(document).ready(function() {
