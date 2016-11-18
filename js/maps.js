@@ -1,5 +1,6 @@
 var map = null;
 var infoWindow = null;
+var marker
  
 function openInfoWindow(marker) {
     var markerLatLng = marker.getPosition();
@@ -25,7 +26,7 @@ function initialize() {
  
     infoWindow = new google.maps.InfoWindow();
  
-    var marker = new google.maps.Marker({
+    marker = new google.maps.Marker({
         position: myLatlng,
         draggable: true,
         map: map,

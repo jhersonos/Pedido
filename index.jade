@@ -45,7 +45,7 @@ html
         .two.fields
           .field
             label Destino
-            input(type='text')
+            input(type='text',ng-model='destino',ng-keypress='getRestaurantes.viewMap($event)')
           .field
             label referencia
             input(type='text')

@@ -5,7 +5,9 @@ app.controller("pedidoCtrl", function($scope,$http) {
 	$scope.locales=[{}];
 	$scope.productos={};
 	$scope.listap=[];
+	$scope.destinoLatLng;
 	var total=0;
+
 	$scope.getRestaurantes={
 		company:function(){
 			var url = "http://localhost:3000/company";
@@ -67,10 +69,28 @@ app.controller("pedidoCtrl", function($scope,$http) {
               	+nombre+'<div class="right floated pointer" onclick="remove('+idcheck+')">x</div>'+						
 						'<div class="right floated rigth-40">S/'+
 						precio+'</div></div>');
-              total = parseInt(total) + parseInt(precio);
-              console.log(total)
+              total = parseFloat(total) + parseFloat(precio);
           });
 			$('#total').val(total)
+		},viewMap: function(e){
+			var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
+			var key = '&key=AIzaSyDLJLGBPkIS9h7RdXSLCMOBussJjV94ZyA';
+			var keyCode = 13;
+			if (e.keyCode === keyCode) {
+				$http({
+					method: 'GET',
+					url: url+$scope.destino+key
+				}).then(function(r){
+					if (r.data.results) {
+						var p = r.data.results[0].geometry.location;
+						$scope.destinoLatLng = p;
+						map.setCenter(new google.maps.LatLng(p.lat,p.lng));
+						marker.setPosition(new google.maps.LatLng(p.lat,p.lng));						
+					}
+				},function(c){
+					console.log(c);
+				})
+			}
 		}
 	}
 	$scope.getRestaurantes.company();
