@@ -67,25 +67,26 @@ html
       .header
         | Productos
       .image.content
-        .description
+        .description#full-width
           .ui.list
             .item
-              table.ui.compact.celled.definition.table
-                thead
-                  tr
-                    th -
-                    th producto
-                    th precio
-                tbody
-                  tr(ng-repeat='carta in productos')
-                    td
-                      input(type='checkbox', name='example', id='{{$index}}')
-                    td
-                      label {{ carta.name }}
-                      input(type='hidden', id='n{{$index}}', value='{{ carta.name }}')
-                    td
-                      label {{ carta.size[0].price}}
-                      input(type='hidden', id='p{{$index}}', value='{{ carta.size[0].price }}')
+              .ui.grid.ui.compact.celled.definition.table(style="height:320px;overflow-y:auto;")
+                .ui.three.column.row
+                    .column 
+                      h5 -
+                    .column 
+                      h5 producto
+                    .column 
+                      h5 precio
+                .ui.three.column.row(ng-repeat='carta in productos')
+                  .column
+                    input(type='checkbox', name='example', id='{{$index}}')
+                  .column
+                    label {{ carta.name }}
+                    input(type='hidden', id='n{{$index}}', value='{{ carta.name }}')
+                  .column
+                    label {{ carta.size[0].price}}
+                    input(type='hidden', id='p{{$index}}', value='{{ carta.size[0].price }}')
       .actions
         .ui.button Cancelar pedido
         .ui.button(ng-click='getRestaurantes.addProduct()') Agregar a la Cola

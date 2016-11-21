@@ -71,6 +71,9 @@ padding: 10px;
 #list-product div{
 	margin: 5px;
 }
+#full-width{
+	width: 100%;
+}
 #map{
 	width: 100%;
 	height: 220px;
