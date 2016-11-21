@@ -50,6 +50,17 @@ padding: 10px;
 	width: 100%;
     text-align: center;
 }
+#label-off{
+	color: silver !important;
+}
+#off{
+	border: 1px solid silver;
+	cursor: auto;
+}
+#on{
+	border: 1px solid black;
+	cursor: pointer;
+}
 #list-product{
 	max-height: 150px;
     overflow-y: auto;

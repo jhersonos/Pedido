@@ -17,28 +17,31 @@ app.controller("pedidoCtrl", function($scope,$http) {
 			}).then(function successCallback(response) {
 			    // console.log(response.data)
 			    $scope.restaurantes = response.data;
+			    $("#restaurant-list").removeAttr('disabled')
 			  }, function errorCallback(response) {
-			    
+			    $("#restaurant-list").attr('disabled')
 			  });
 		},local:function(){
-			$("#restaurant-list").on('change',function(){
 				var c = $('#restaurant-list').val();
-				var url = "http://localhost:3000/headquarter?company="+c;
+				if (c=="") {
+					console.log("Seleccione un restaurante")
+				}else{
+					var url = "http://localhost:3000/headquarter?company="+c;
 
-				$http({
-				  method: 'GET',
-				  url: url
-				}).then(function successCallback(response) {				    
-				    $scope.locales = response.data.headquarters;
-				    	// console.log(response.data.headquarters)
-				  }, function errorCallback(response) {
-				    
-				  });
+					$http({
+					  method: 'GET',
+					  url: url
+					}).then(function successCallback(response) {				    
+					    $scope.locales = response.data.headquarters;
+					    $('#local-list').removeAttr('disabled')
+					    // console.log(response.data.headquarters)
+					  }, function errorCallback(response) {
+					    $('#local-list').attr('disabled')
+					  });
+				}
+				
 
-
-			});
 		},producto:function(){
-			$('#local-list').on('change',function(){
 				var companylist = $('#restaurant-list').val();
 				var locallist = $('#local-list').val();
 				if(companylist!="" && locallist!="") {
@@ -48,14 +51,17 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					  url: url
 					}).then(function successCallback(response) {				    					    
 					    $scope.productos=response.data[0].headquarters[0].menu;
+					    $('.pedido-box').attr('id','on')
+					    $('.pedido-box .center-box').attr('id','')
 					    // console.log($scope.productos)
 					  }, function errorCallback(response) {
 					    console.log(response)
+					    $('.pedido-box').attr('id','off')
+					    $('.pedido-box .center-box').attr('id','label-off')					    
 					  });
 				}else{
 
 				}
-			});
 		},addProduct:function(){
 			total=0;
 			$("#list-product").html("");

@@ -17,12 +17,12 @@ html
         .two.fields
           .field
             | Restaurante: 
-            select#restaurant-list(ng-click='getRestaurantes.local()')
+            select#restaurant-list(ng-click='getRestaurantes.local()',disabled)
               option(value='') -- Seleccione restaurante --
               option(ng-repeat='rest in restaurantes', value='{{ rest._id }}') {{	rest.name }}
           .field
             | Local: 
-            select#local-list(ng-click='getRestaurantes.producto()')
+            select#local-list(ng-click='getRestaurantes.producto()',disabled)
               option(value='') -- Seleccione local --
               option(ng-repeat='local in locales', value='{{ local._id }}') {{ local.address }}
         h4.ui.dividing.header Pedido
@@ -30,8 +30,8 @@ html
           .field
             .fields
               .five.wide.field
-                .pedido-box
-                  .center-box
+                .pedido-box#off
+                  .center-box#label-off
                     .item-center.icon
                       i.huge.add.circle.icon
                     .item-center
