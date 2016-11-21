@@ -23,6 +23,8 @@ app.controller("pedidoCtrl", function($scope,$http) {
 			  });
 		},local:function(){
 				var c = $('#restaurant-list').val();
+				$('.pedido-box').attr('id','off')
+				$('.pedido-box .center-box').attr('id','label-off')	
 				if (c=="") {
 					console.log("Seleccione un restaurante")
 				}else{
