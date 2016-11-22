@@ -1,8 +1,8 @@
 var app = angular.module("pedidoApp", []);
 app.controller("pedidoCtrl", function($scope,$http) {
 
-	$scope.restaurantes=[{}];
-	$scope.locales=[{}];
+	$scope.restaurantes=[];
+	$scope.locales=[];
 	$scope.productos={};
 	$scope.listap=[];
 	$scope.destinoLatLng;
@@ -53,6 +53,7 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					  url: url
 					}).then(function successCallback(response) {				    					    
 					    $scope.productos=response.data[0].headquarters[0].menu;
+					    $scope.listap=$scope.productos;
 					    $('.pedido-box').attr('id','on')
 					    $('.pedido-box .center-box').attr('id','')
 					    // console.log($scope.productos)
@@ -65,21 +66,42 @@ app.controller("pedidoCtrl", function($scope,$http) {
 
 				}
 		},addProduct:function(){
-			total=0;
-			$("#list-product").html("");
-			$("table tbody tr td input:checked").each(function(i, elem){
-              var n = "#n"+this.id;
-              var p = "#p"+this.id;
-              var idcheck= parseInt(this.id);
-              var nombre=$(n).val();//nombre del producto
-              var precio = $(p).val();//precio del producto
-              $("#list-product").append('<div class="item" id="item'+idcheck+'">'
-              	+nombre+'<div class="right floated pointer" onclick="remove('+idcheck+')">x</div>'+						
-						'<div class="right floated rigth-40">S/'+
-						precio+'</div></div>');
-              total = parseFloat(total) + parseFloat(precio);
-          });
+			var total = 0;			
+
+			$("#lista-neta .elegible input:checked").each(function(i, elem){
+              var item = "#item"+this.id;
+              $(item).removeClass('item none');
+              $(item).addClass('item show');
+              var element = "#prex"+this.id;
+              $(element).removeClass('pnone')
+			  $(element).addClass('pshow')
+			  var p = "#p"+this.id;
+			  var getp = parseFloat($(p).val());
+			  total = parseFloat(total)+getp;          
+          	});
 			$('#total').val(total)
+		},remove:function(index){
+			var nitem = index.$index;
+			var check = "#"+nitem;
+			var element = "#prex"+nitem;
+			// console.log(index.$index);
+			//remove item #
+			var item = "#item"+nitem;
+			$(item).removeClass('item show');
+			$(item).addClass('item none');
+			$(element).removeClass('pshow')
+			$(element).addClass('pnone')
+			$(check).prop('checked', false);
+			//bucle for new result price
+			var a = 0;
+			total = 0;
+			$("#list-product .show .rigth-40 .pshow input[type=hidden]").each(function(){
+				var actual = parseFloat($(this).val())
+				total = total + actual;
+			})
+			$('#total').val(total)
+
+
 		},viewMap: function(e){
 			var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
 			var key = '&key=AIzaSyDLJLGBPkIS9h7RdXSLCMOBussJjV94ZyA';

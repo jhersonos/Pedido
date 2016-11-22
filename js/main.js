@@ -10,15 +10,9 @@ $( document ).ready(function() {
           })
           .modal('show')
         ; 
-    }else{
-        //console.log("Box disabled")
-    }
-    	
+        }else{
+            //console.log("Box disabled")
+        }	
     })
-    function remove(id){
-    	var tag = "#"+id;
-    	var tagitem = "#item"+id;
-    	$(tagitem).remove();
-    	$(tag).prop('checked',false)
-    }
+
 });

@@ -61,6 +61,12 @@ padding: 10px;
 	border: 1px solid black;
 	cursor: pointer;
 }
+.none{
+	display: none !important;
+}
+.show{
+	display: block !important;
+}
 #list-product{
 	max-height: 150px;
     overflow-y: auto;

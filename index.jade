@@ -40,6 +40,12 @@ html
                 textarea#comentarios(placeholder='Comentarios extras sobre el pedido')
           .field
             #list-product.ui.celled.ordered.list
+              .item.none(ng-repeat="clista in listap",id="item{{ $index }}")
+                | {{  clista.name }}
+                .right.floated.pointer(id="v{{$index}}",ng-click="getRestaurantes.remove(this)") x
+                .right.floated.rigth-40 S/ 
+                  span.prex.pnone(id="prex{{$index}}") {{ clista.size[0].price }}
+                    input(type="hidden",value="{{ clista.size[0].price }}")
             label Total
             input#total(type='text')
         .two.fields
@@ -78,8 +84,8 @@ html
                       h5 producto
                     .column 
                       h5 precio
-                .ui.three.column.row(ng-repeat='carta in productos')
-                  .column
+                .ui.three.column.row#lista-neta(ng-repeat='carta in productos')
+                  .column.elegible
                     input(type='checkbox', name='example', id='{{$index}}')
                   .column
                     label {{ carta.name }}
