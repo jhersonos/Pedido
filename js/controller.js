@@ -162,7 +162,7 @@ app.controller("pedidoCtrl", function($scope,$http) {
 			});
 			$scope.object = {
 				company 	: $("#restaurant-list option:selected").text(),
-				headquarters: headquarters,
+				headquarter : headquarters,
 				comments	: $("#comentarios").val(),
 				district	: $("#distrito").val(),
 				destiny 	: destiny,
@@ -174,16 +174,32 @@ app.controller("pedidoCtrl", function($scope,$http) {
 				neto 		: $("#monto-cobrar").val()
 			}
 			console.log($scope.object)
-			$.ajax({
+			/*$.ajax({
 			  dataType: "json",
+			  type    : 'POST',
 			  url	  : url,
 			  data 	  : $scope.object,
 			  success : function(r){
-			  	// console.log(r)
+			  	 console.log(r)
 			  },err   :function(s){
-			  	// console.log(s)
+			  	 console.log(s)
 			  }
-			});
+			});*/
+			$http({
+				method: 'POST',
+				url: 'http://localhost:3000/order',
+				data:$scope.object,
+				headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			}).then(function(r){
+				console.log(r)
+			},function(c){
+				console.log(c);
+			})
+
+
+
+
+
 		}
 	}
 	$scope.getRestaurantes.company();
