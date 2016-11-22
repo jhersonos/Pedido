@@ -5,11 +5,13 @@ app.controller("pedidoCtrl", function($scope,$http) {
 	$scope.locales=[];
 	$scope.productos={};
 	$scope.listap=[];
+	$scope.object= {};
+	$scope.direction={};
 	$scope.destinoLatLng;
 	var total=0;
 
 	$scope.getRestaurantes={
-		company:function(){
+		company:function(){//get list of restaurants
 			var url = "http://localhost:3000/company";
 			$http({
 			  method: 'GET',
@@ -21,12 +23,12 @@ app.controller("pedidoCtrl", function($scope,$http) {
 			  }, function errorCallback(response) {
 			    $("#restaurant-list").attr('disabled')
 			  });
-		},local:function(){
+		},local:function(){//get list of locales
 				var c = $('#restaurant-list').val();
 				$('.pedido-box').attr('id','off')
 				$('.pedido-box .center-box').attr('id','label-off')	
 				if (c=="") {
-					console.log("Seleccione un restaurante")
+					// console.log("Seleccione un restaurante")
 				}else{
 					var url = "http://localhost:3000/headquarter?company="+c;
 
@@ -36,14 +38,15 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					}).then(function successCallback(response) {				    
 					    $scope.locales = response.data.headquarters;
 					    $('#local-list').removeAttr('disabled')
-					    // console.log(response.data.headquarters)
+					    $scope.direction = $scope.locales;
+					    // console.log($scope.direction[0].address)
 					  }, function errorCallback(response) {
 					    $('#local-list').attr('disabled')
 					  });
 				}
 				
 
-		},producto:function(){
+		},producto:function(){//get list of products
 				var companylist = $('#restaurant-list').val();
 				var locallist = $('#local-list').val();
 				if(companylist!="" && locallist!="") {
@@ -54,25 +57,24 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					}).then(function successCallback(response) {				    					    
 					    $scope.productos=response.data[0].headquarters[0].menu;
 					    $scope.listap=$scope.productos;
-					    $('.pedido-box').attr('id','on')
-					    $('.pedido-box .center-box').attr('id','')
+					    $('.pedido-box').attr('id','on')//active modal
+					    $('.pedido-box .center-box').attr('id','')//disabled modal
 					    // console.log($scope.productos)
 					  }, function errorCallback(response) {
 					    console.log(response)
-					    $('.pedido-box').attr('id','off')
-					    $('.pedido-box .center-box').attr('id','label-off')					    
+					    $('.pedido-box').attr('id','off')//disable modal
+					    $('.pedido-box .center-box').attr('id','label-off')//disable label of box					    
 					  });
 				}else{
 
 				}
 		},addProduct:function(){
 			var total = 0;			
-
 			$("#lista-neta .elegible input:checked").each(function(i, elem){
-              var item = "#item"+this.id;
-              $(item).removeClass('item none');
-              $(item).addClass('item show');
-              var element = "#prex"+this.id;
+              var item = "#item"+this.id;//id for items list
+              $(item).removeClass('item none');//delete none
+              $(item).addClass('item show');//add show
+              var element = "#prex"+this.id;//price id for bucle
               $(element).removeClass('pnone')
 			  $(element).addClass('pshow')
 			  var p = "#p"+this.id;
@@ -81,10 +83,9 @@ app.controller("pedidoCtrl", function($scope,$http) {
           	});
 			$('#total').val(total)
 		},remove:function(index){
-			var nitem = index.$index;
+			var nitem = index.$index;//index.$index -> value of id
 			var check = "#"+nitem;
 			var element = "#prex"+nitem;
-			// console.log(index.$index);
 			//remove item #
 			var item = "#item"+nitem;
 			$(item).removeClass('item show');
@@ -99,9 +100,17 @@ app.controller("pedidoCtrl", function($scope,$http) {
 				var actual = parseFloat($(this).val())
 				total = total + actual;
 			})
+			var del = $("#delivery").val();
+			var net = parseFloat(del) + total;
+			$("#monto-cobrar").val(net);
 			$('#total').val(total)
-
-
+		},neto:function(){
+			var delivery=$("#delivery").val();
+			if (delivery=="") {
+				delivery=0;
+			}
+			var neto = parseFloat($("#total").val())+parseFloat(delivery);
+			$("#monto-cobrar").val(neto)
 		},viewMap: function(e){
 			var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
 			var key = '&key=AIzaSyDLJLGBPkIS9h7RdXSLCMOBussJjV94ZyA';
@@ -121,6 +130,60 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					console.log(c);
 				})
 			}
+		},save:function(){
+			var url = "";
+			var products = [];
+			var headquarters = {
+				address:$scope.direction[0].address,
+				location:{
+					lat:$scope.direction[0].location.coordinates[0],
+					lng:$scope.direction[0].location.coordinates[1]
+				}
+			};
+			var destiny = {
+				address:$("#destino").val(),
+				location:{
+					lat:marker.position.lat(),
+					lng:marker.position.lng()
+				}
+			};
+			var delivery = $("#delivery").val();
+			if (delivery=="") {
+				delivery=0;
+			}
+			$("#lista-neta .elegible input:checked").each(function(i, elem){
+				var id 	  = "#"+this.id;
+				var name  = "#n"+this.id;
+				var price = "#p"+this.id;
+				products.push({
+					name :$(name).val(),
+					price:$(price).val()
+				})
+			});
+			$scope.object = {
+				company 	: $("#restaurant-list option:selected").text(),
+				headquarters: headquarters,
+				comments	: $("#comentarios").val(),
+				district	: $("#distrito").val(),
+				destiny 	: destiny,
+				reference	: $("#referencia").val(),
+				products 	: products,
+				subtotal	: $("#total").val(),
+				payment		: $("#tipo-pago").val(),
+				delivery	: delivery,
+				neto 		: $("#monto-cobrar").val()
+			}
+			console.log($scope.object)
+			$.ajax({
+			  dataType: "json",
+			  url	  : url,
+			  data 	  : $scope.object,
+			  success : function(r){
+			  	// console.log(r)
+			  },err   :function(s){
+			  	// console.log(s)
+			  }
+			});
 		}
 	}
 	$scope.getRestaurantes.company();

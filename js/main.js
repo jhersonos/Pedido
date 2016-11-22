@@ -14,5 +14,13 @@ $( document ).ready(function() {
             //console.log("Box disabled")
         }	
     })
+    $(".closem").on('click',function(){
+        $('.ui.modal')
+          .modal({
+            blurring: true,
+            closable : true
+          })
+          .modal('hide');
+    })
 
 });

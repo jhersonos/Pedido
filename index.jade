@@ -13,7 +13,7 @@ html
     link(rel='stylesheet', type='text/css', href='#{assets}/css/main.css')
   body(ng-app='pedidoApp', ng-controller='pedidoCtrl')
     .carta
-      form#pedido.ui.form
+      #pedido.ui.form
         .two.fields
           .field
             | Restaurante: 
@@ -38,6 +38,8 @@ html
                       label producto
               .eleven.wide.field
                 textarea#comentarios(placeholder='Comentarios extras sobre el pedido')
+            label Distrito
+            input(type='text',ng-model='distrito',id="distrito")
           .field
             #list-product.ui.celled.ordered.list
               .item.none(ng-repeat="clista in listap",id="item{{ $index }}")
@@ -47,14 +49,14 @@ html
                   span.prex.pnone(id="prex{{$index}}") {{ clista.size[0].price }}
                     input(type="hidden",value="{{ clista.size[0].price }}")
             label Total
-            input#total(type='text')
+            input#total(type='text',disabled)
         .two.fields
           .field
             label Destino
-            input(type='text',ng-model='destino',ng-keypress='getRestaurantes.viewMap($event)')
+            input#destino(type='text',ng-model='destino',ng-keypress='getRestaurantes.viewMap($event)')
           .field
             label referencia
-            input(type='text')
+            input#referencia(type='text')
         .two.fields
           .field
             #map
@@ -64,9 +66,11 @@ html
               option -- Seleccione metodo de pago --
               option(value='efectivo') Efectivo
               option(value='visa') Visa
+            label Precio delivery
+            input#delivery(type='text',ng-keyup="getRestaurantes.neto()",value="0")
             label Monto a cobrar
-            input(type='text')
-            button.ui.button.btn-submit Realizar Pedido
+            input#monto-cobrar(type='text',disabled)  
+            button.ui.button.btn-submit(ng-click="getRestaurantes.save()") Realizar Pedido
     // Pop up con los productos
     .ui.modal
       i.close.icon
@@ -94,5 +98,5 @@ html
                     label {{ carta.size[0].price}}
                     input(type='hidden', id='p{{$index}}', value='{{ carta.size[0].price }}')
       .actions
-        .ui.button Cancelar pedido
-        .ui.button(ng-click='getRestaurantes.addProduct()') Agregar a la Cola
+        .ui.button.closem Cancelar pedido
+        .ui.button.closem(ng-click='getRestaurantes.addProduct()') Agregar a la Cola
