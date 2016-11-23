@@ -47,6 +47,7 @@ app.controller("pedidoCtrl", function($scope,$http) {
 				
 
 		},producto:function(){//get list of products
+				$("#sav").attr("disabled",false);
 				var companylist = $('#restaurant-list').val();
 				var locallist = $('#local-list').val();
 				if(companylist!="" && locallist!="") {
@@ -82,6 +83,7 @@ app.controller("pedidoCtrl", function($scope,$http) {
 			  total = parseFloat(total)+getp;          
           	});
 			$('#total').val(total)
+			$("#monto-cobrar").val(total);
 		},remove:function(index){
 			var nitem = index.$index;//index.$index -> value of id
 			var check = "#"+nitem;
@@ -131,26 +133,20 @@ app.controller("pedidoCtrl", function($scope,$http) {
 				})
 			}
 		},save:function(){
-			var url = "";
 			var products = [];
+			var distrito = $("#distrito").val();
+			var referencia = $("#referencia").val();
+			var client = $("#name-client").val();
+			var destino = $("#destino").val();
+			var tipo =$("#tipo-pago").val();
+			var haddres = $scope.direction[0].address;
 			var headquarters = {
-				address:$scope.direction[0].address,
+				address:haddres,
 				location:{
 					lat:$scope.direction[0].location.coordinates[0],
 					lng:$scope.direction[0].location.coordinates[1]
 				}
 			};
-			var destiny = {
-				address:$("#destino").val(),
-				location:{
-					lat:marker.position.lat(),
-					lng:marker.position.lng()
-				}
-			};
-			var delivery = $("#delivery").val();
-			if (delivery=="") {
-				delivery=0;
-			}
 			$("#lista-neta .elegible input:checked").each(function(i, elem){
 				var id 	  = "#"+this.id;
 				var name  = "#n"+this.id;
@@ -160,41 +156,169 @@ app.controller("pedidoCtrl", function($scope,$http) {
 					price:$(price).val()
 				})
 			});
-			$scope.object = {
-				company 	: $("#restaurant-list option:selected").text(),
-				headquarter : headquarters,
-				comments	: $("#comentarios").val(),
-				district	: $("#distrito").val(),
-				destiny 	: destiny,
-				reference	: $("#referencia").val(),
-				products 	: products,
-				subtotal	: $("#total").val(),
-				payment		: $("#tipo-pago").val(),
-				delivery	: delivery,
-				neto 		: $("#monto-cobrar").val()
+			var company = $("#restaurant-list").val();
+			/*validation*/
+
+			if (company!="") {
+				$(".v").removeClass('err')
+				if (headquarters.address!="") {
+					$(".v").removeClass('err')
+					if (products.length>0) {
+						$(".v").removeClass('err')
+						if (distrito!="") {
+							$(".v").removeClass('err')
+							if (destino!="") {
+								$(".v").removeClass('err')
+								if (referencia!="") {
+									$(".v").removeClass('err')
+									if (client!="") {
+										$(".v").removeClass('err')
+										if (tipo!="") {
+											$(".v").removeClass('err')
+											$("#sav").addClass("loading")
+											$("#sav").attr("disabled",true)	
+											var url = "";
+											
+											var destiny = {
+												address:destino,
+												location:{
+													lat:marker.position.lat(),
+													lng:marker.position.lng()
+												}
+											};
+											var delivery = $("#delivery").val();
+											if (delivery=="") {
+												delivery=0;
+											}
+											var c = $("#comentarios").val();
+											if (c=="") {
+												c="--";
+											}
+											$("#lista-neta .elegible input:checked").each(function(i, elem){
+												var id 	  = "#"+this.id;
+												var name  = "#n"+this.id;
+												var price = "#p"+this.id;
+												products.push({
+													name :$(name).val(),
+													price:$(price).val()
+												})
+											});
+											$scope.object = {
+												company 	: $("#restaurant-list option:selected").text(),
+												headquarter : headquarters,
+												comments	: c,
+												district	: distrito,
+												destiny 	: destiny,
+												reference	: referencia,
+												products 	: products,
+												subtotal	: $("#total").val(),
+												payment		: tipo,
+												delivery	: delivery,
+												neto 		: $("#monto-cobrar").val(),
+												client		: client
+
+											}
+											console.log($scope.object)//show elements of objeto
+
+											$http({
+												method: 'POST',
+												url: 'http://localhost:3000/order',
+												data:$scope.object,
+												headers: { 'Content-Type': 'application/json;charset=utf-8' },
+											}).then(function(r){
+												$("#correct").modal({
+									            blurring: true,
+									            closable : true
+									          }).modal('show') 
+												console.log(r)
+												$("#sav").attr("disabled",false)
+												$("#sav").removeClass("loading")
+												$("#restaurant-list").val("");
+												$("#local-list").val("").attr("disabled",true);
+												$("#comentarios").val("");	
+												$("#distrito").val("");
+												$("#total").val("");
+												$("#destino").val("");
+												$("#referencia").val("");
+												$("#name-client").val("");
+												$("#tipo-pago").val("");
+												$("#delivery").val("");
+												$("#monto-cobrar").val("");			
+												$("#list-product .item").removeClass("show")
+												$("#list-product .item").addClass("none");
+												$('.pedido-box .center-box').attr('id','label-off')
+												$('.pedido-box').attr('id','off')
+												$('.prex').removeClass('pshow')
+												$('.prex').addClass('pnone')
+
+											},function(c){
+												console.log(c)
+												$("#msg").append(c.data.message);
+												$("#sav").attr("disabled",false)
+												 $('#error').modal({
+										            blurring: true,
+										            closable : true
+										          }).modal('show'); 
+													})
+										}else{
+											// border tipo
+											$('#complete').modal({
+										 	blurring: true,
+							        		closable : true}).modal('show'); 
+											$("#tipo-pago").addClass('err')
+										}
+									}else{
+										// border client
+										$('#complete').modal({
+									 	blurring: true,
+						        		closable : true}).modal('show'); 
+										$("#name-client").addClass('err')
+									}
+								}else{
+									// border referencia
+									$('#complete').modal({
+								 	blurring: true,
+					        		closable : true}).modal('show'); 
+									$("#referencia").addClass('err')
+								}
+							}else{
+								// border destino
+								$('#complete').modal({
+							 	blurring: true,
+				        		closable : true}).modal('show'); 
+								$('#destino').addClass('err')
+							}
+						}else{
+							// distrito border
+							$('#complete').modal({
+						 	blurring: true,
+		            		closable : true}).modal('show'); 
+							$("#distrito").addClass('err')
+						}
+					}else{
+						//product border 
+						$('#complete').modal({
+					 	blurring: true,
+	            		closable : true}).modal('show'); 
+						$(".pedido-box").addClass("err")
+					}
+				}else{
+					// border address
+					$('#complete').modal({
+				 	blurring: true,
+            		closable : true}).modal('show'); 
+					$("#local-list").addClass("err")
+				}
+			}else{
+				// border company
+				 $('#complete').modal({
+				 	blurring: true,
+            		closable : true}).modal('show'); 
+				$("#restaurant-list").addClass("err")
 			}
-			console.log($scope.object)
-			/*$.ajax({
-			  dataType: "json",
-			  type    : 'POST',
-			  url	  : url,
-			  data 	  : $scope.object,
-			  success : function(r){
-			  	 console.log(r)
-			  },err   :function(s){
-			  	 console.log(s)
-			  }
-			});*/
-			$http({
-				method: 'POST',
-				url: 'http://localhost:3000/order',
-				data:$scope.object,
-				headers: { 'Content-Type': 'application/json;charset=utf-8' },
-			}).then(function(r){
-				console.log(r)
-			},function(c){
-				console.log(c);
-			})
+
+			/*end validation*/
+			
 
 
 

@@ -17,12 +17,12 @@ html
         .two.fields
           .field
             | Restaurante: 
-            select#restaurant-list(ng-click='getRestaurantes.local()',disabled)
+            select.v#restaurant-list(ng-click='getRestaurantes.local()',disabled)
               option(value='') -- Seleccione restaurante --
               option(ng-repeat='rest in restaurantes', value='{{ rest._id }}') {{	rest.name }}
           .field
             | Local: 
-            select#local-list(ng-click='getRestaurantes.producto()',disabled)
+            select.v#local-list(ng-click='getRestaurantes.producto()',disabled)
               option(value='') -- Seleccione local --
               option(ng-repeat='local in locales', value='{{ local._id }}') {{ local.address }}
         h4.ui.dividing.header Pedido
@@ -30,7 +30,7 @@ html
           .field
             .fields
               .five.wide.field
-                .pedido-box#off
+                .v.pedido-box#off
                   .center-box#label-off
                     .item-center.icon
                       i.huge.add.circle.icon
@@ -39,7 +39,7 @@ html
               .eleven.wide.field
                 textarea#comentarios(placeholder='Comentarios extras sobre el pedido')
             label Distrito
-            input(type='text',ng-model='distrito',id="distrito")
+            input.v(type='text',ng-model='distrito',id="distrito")
           .field
             #list-product.ui.celled.ordered.list
               .item.none(ng-repeat="clista in listap",id="item{{ $index }}")
@@ -53,26 +53,28 @@ html
         .two.fields
           .field
             label Destino
-            input#destino(type='text',ng-model='destino',ng-keypress='getRestaurantes.viewMap($event)')
+            input.v#destino(placeholder="press enter al terminar de escribir la direccion",required,type='text',ng-model='destino',ng-keypress='getRestaurantes.viewMap($event)')
           .field
             label referencia
-            input#referencia(type='text')
+            input.v#referencia(type='text')
         .two.fields
           .field
             #map
           .field
+            label Nombre Cliente
+            input.v#name-client(type="text",required)
             label Metodo de pago:
-            select#tipo-pago
-              option -- Seleccione metodo de pago --
+            select.v#tipo-pago
+              option(value="") -- Seleccione metodo de pago --
               option(value='efectivo') Efectivo
               option(value='visa') Visa
             label Precio delivery
-            input#delivery(type='text',ng-keyup="getRestaurantes.neto()",value="0")
+            input#delivery(autocomplete="off",type='text',ng-keyup="getRestaurantes.neto()",value="0")
             label Monto a cobrar
             input#monto-cobrar(type='text',disabled)  
-            button.ui.button.btn-submit(ng-click="getRestaurantes.save()") Realizar Pedido
+            button#sav.ui.button.btn-submit(disabled,ng-click="getRestaurantes.save()") Realizar Pedido
     // Pop up con los productos
-    .ui.modal
+    .ui.modal#pro
       i.close.icon
       .header
         | Productos
@@ -100,3 +102,26 @@ html
       .actions
         .ui.button.closem Cancelar pedido
         .ui.button.closem(ng-click='getRestaurantes.addProduct()') Agregar a la Cola
+    #correct.ui.modal
+      i.close.icon
+      .header
+        | Pedido realizado!
+      .actions
+        .ui.button#co Aceptar
+    .ui.modal#error
+      i.close.icon
+      .header
+        | Ocurrio un problema al realizar el pedido
+      .description
+        h5#msg
+      .actions
+        .ui.button#close Cancelar
+        .ui.button#ok Ok.
+    .ui.modal#complete
+      i.close.icon
+      .header
+        | Campos incompletos
+      .description
+        p(style="margin-left:25px;") Por favor complete los campos vacios
+      .actions
+        .ui.button#vale vale
