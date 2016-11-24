@@ -194,7 +194,7 @@ app.controller("pedidoCtrl", function($scope,$http) {
 											if (c=="") {
 												c="--";
 											}
-											$("#lista-neta .elegible input:checked").each(function(i, elem){
+											/*$("#lista-neta .elegible input:checked").each(function(i, elem){
 												var id 	  = "#"+this.id;
 												var name  = "#n"+this.id;
 												var price = "#p"+this.id;
@@ -202,7 +202,7 @@ app.controller("pedidoCtrl", function($scope,$http) {
 													name :$(name).val(),
 													price:$(price).val()
 												})
-											});
+											});*/
 											$scope.object = {
 												company 	: $("#restaurant-list option:selected").text(),
 												headquarter : headquarters,
